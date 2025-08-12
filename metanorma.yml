@@ -2,7 +2,7 @@
 metanorma:
   source:
     files:
-      - sources/1.0.0/document.adoc
+      - sources/6.0.0/document.adoc
 
   collection:
     organization: "IHO: International Hydrographic Organization"
