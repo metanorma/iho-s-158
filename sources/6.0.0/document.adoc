@@ -1,0 +1,205 @@
+= Annex E: Data Validation Checks
+:series: S
+:docnumber: 158
+:doctype: standard
+:edition: 6.0.0
+:language: en
+:published-date:
+:copyright-year: 2016
+:draft:
+:committee: ircc
+:workgroup: ibsc
+:mn-document-class: iho
+:mn-output-extensions: xml,html,doc,pdf,rxl
+:local-cache-only:
+:data-uri-image:
+:imagesdir: images
+
+
+[appendix,obligation="informative"]
+== Data Validation Checks
+
+=== References
+
+IHO S-58 ENC VALIDATION CHECKS Edition 6.0.0 -- 2016
+
+=== Abbreviations
+
+PS -- Product Specification
+
+DCEG -- Data Classification and Encoding Guide
+
+=== Production validation checks for S-129 Under Keel Clearance Management
+
+The following checks are intended for production systems designed to produce S-129
+UKCM datasets. The checks can be administered at any time during the production phase.
+All checks should be considered as warnings, even though more severe classifications
+are available. Given the status of the development and lack of experience with system
+use of S-129 datasets, it is considered premature to classify any checks as error
+or critical error at this time. All operators and spatial expressions are defined
+in Annex F.
+
+=== Check Classification
+
+[cols="30,99,395",options="noheader,unnumbered"]
+|===
+| C | Critical Error |
+An error which would make an ENC unusable in ECDIS through not loading or causing
+an ECDIS to crash or presenting data which is unsafe for navigation.
+| E | Error          |
+An error which may degrade the quality of the ENC through appearance or usability
+but which will not pose a significant danger when used to support navigation.
+| W | Warning        |
+An error which may be duplication or an inconsistency which will not noticeably degrade
+the usability of an ENC in ECDIS.
+
+|===
+
+=== Check application
+
+[cols="30,99,395",options="noheader,unnumbered"]
+|===
+| B | Base        | Apply check to new dataset, new edition, and post-update dataset (after updates have been applied to the base).
+| U | Update      | Apply check to update datasets in isolation.
+| S | Post-update | Apply check only to a post-update dataset (i.e. subsequent to application of all available updates).
+|===
+
+Checks do not apply to dataset terminations or cancellations, except where the check
+description explicitly states it applies in case of a termination or cancellation.
+
+=== Checks relating to UKCM Product Specification
+
+*Check = S-100 Generic test*
+
+*Check = S-100 Format Specific test*
+
+*Check = S-102 Product Specification specific test*
+
+[cols="6",options="header,unnumbered"]
+|===
+| No | Check description | Check message | Check solution | Conformity to: | Apply to
+
+| 1 | If any mandatory attributes are not Present. | Mandatory attributes are not encoded.
+| Populate mandatory attributes. | DCEG and PS 7.2 Application Schema | B
+
+| 2 | If any mandatory attributes are present but the attribute value is unknown.
+| Mandatory attributes are encoded, but attribute value is unknown.
+| The reason for omission must be given by populating a GML nilReason attribute.
+| PS 7.2 Application Schema | B
+
+| 3
+| For each feature object with an attribute of type Float or Integer where the
+value contains zeroes before the first numerical digit or after the last numerical digit.
+| Values have been padded with non-significant zeroes. E.g. For a signal period of 2.5
+sec, the value of SIGPER must be 2.5 and not 02.500.
+| Remove non-significant zeroes.  | PS 7.2 Application Schema | B
+
+| 4
+| For each association between features instances, features instances and information
+instances, and between information instances that is not defined in the feature catalogue.
+| Wrong association used.  | Use correct association type.  | Logical consistency | B
+
+| 5 | For each role name on associations that is not defined in the feature catalogue.
+| Wrong role used.  | Use correct role name.  | Logical consistency | B
+
+| 6 | For each association that is not defined in the feature catalogue.
+| Unknown association is used.  | Use association that is defined in the feature catalogue.
+| Logical consistency | B
+
+| 7 | For each role name that is not defined in the feature catalogue.
+| Unknown role name is used.  | Use role name that is defined in the feature catalogue.
+| Logical consistency | B
+
+| 8 | For each association ensure associated classes are only those permitted by
+the feature catalogue.
+| Class is associated in an illegal association.  | Ensure correct association is used between classes.  | Logical consistency | B
+
+| 9 | For each role name ensure it is only used with permitted associations.  | Role name is used on an illegal association.
+| Ensure correct role names are used on the association.  | Logical consistency | B
+
+| 10 | Ensure dataset conformance to the GML schema.  | Dataset does not conform to the GML schema.
+| Ensure conformance to the GML schema.  | Annex B. Schema documentation | B
+
+| 11 | If the file names in an exchange set are not in accordance with the Product Specification.
+| File names are not in accordance with the Product Specification.  | Amend file names.
+| Logical consistency | B
+
+| 12
+| For each feature instance, which does not have a valid feature class label/code
+as defined by the feature catalogue.
+| Object has invalid feature class code.  | Amend object class code.
+| Logical consistency | B
+
+| 13 | For each attribute, which does not have a valid attribute label/code as defined
+by the feature catalogue.
+| Attribute has invalid attribute label/code.  | Amend attribute label/code.
+| Logical consistency | B
+
+| 14
+| For each feature object, which contains attributes outside the list of permissible
+attributes for the feature class (as defined in the feature catalogue).
+| Attribute not permitted on feature class.  | Remove attribute.  | Logical consistency | B
+
+| 15 | If the order of the data in a dataset is not correct.  | Incorrect data order.
+| Amend data order.  | Logical consistency | B
+
+| 16
+| For each attribute instance where the total number of instances exceed the permitted number of instances.
+| Too many instances of attribute.  | Ensure correct attribute encoding.  | Logical consistency | B
+
+| 17
+| For each instance of a file referenced in the data, and if not present in the exchange set.
+| File referenced in the dataset is not present in the exchange set.  | Add file to exchange set or remove reference to file.
+| Logical consistency | B
+
+| 18
+| For each dataset discovery metadata file that does not correspond to the dataset discovery metadata content table.
+| Dataset discovery metadata file that does not correspond to the dataset discovery metadata content table.
+| Ensure correct encoding of the discovery metadata file.  | Logical consistency | B
+
+| 19
+| For each cancellation (termination) of a dataset that does not exist on the system or has already been cancelled.
+| Terminated dataset is not present.  | Ignore the update.  | Logical consistency | B, U
+
+| 20
+| For each cancellation (termination) of a dataset where the update exchange set contains a corresponding dataset file.
+| Cancellations cannot contain data objects.  | Remove the dataset file from the exchange set or correct the metadata.
+| Logical consistency | B, U
+
+| 21 | If any optional attributes are present but the attribute value is unknown or missing.
+| Optional attributes are encoded, but attribute value is unknown or missing.
+| Remove optional attributes when value is unknown or missing.  | Logical consistency | B
+
+| 22 | For datasets not named according to dataset file naming convention.
+| Dataset file name is not according to file naming convention.  | Rename according to naming convention.
+| Logical consistency | B
+
+| 23 | For each feature instance of type FixedTimeRange where timeStart is encoded later than timeEnd.
+| Feature has timeStart encoded later than timeEnd.
+| Ensure values of FixedTimeRange subattributes timeEnd and timeStart are logical.
+| PS 7.2 Application Schema | B
+
+| 24
+| For each feature instance where FixedTimeRange subattribute timeStart is notNull
+AND timeEnd is Null OR not Present.
+| Feature has timeStart without a value of timeEnd.  | Populate timeEnd or remove timeStart.  | PS 7.2 Application Schema | B
+
+| 25
+| For each feature instance where FixedTimeRange subattribute timeEND is notNull
+AND timeStart is Null OR not Present.
+| Object has timeEnd without a value of timeStart.  | Populate timeStart or remove timeEnd.  | PS 7.2 Application Schema | B
+
+| 26
+| For the Date Time attributes generationTime, expectedPassingTime, Timestart and TimeEnd where encoding is not according to format.
+| Attributes are not encoded according to attribute type format.  | Encode according to attribute type format.  | PS 7.2 Application Schema | B
+
+| 27
+| For each UnderKeelClearancePlan without any UnderKeelClearanceControlPoint associated
+with it.
+| An UnderKeelClearancePlan must consist of minimum 1 UnderKeelClearanceControlPoint
+association.
+| Associate UnderKeelClearancePlan with UnderKeelClearanceControlPoint association.
+| PS 7.2 Application Schema | B
+
+|===
+
